@@ -116,9 +116,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SSSE3Helper.cpp" />
     <ClCompile Include="StopWatch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SSSE3Helper.h" />
     <ClInclude Include="StopWatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
