@@ -211,6 +211,8 @@ __m128i employeeSchedule(bool RunOnHardware){
 	else
 		empshuffle = SSSE3Helper::shufflePseudo(emp,b);
 
-	return _mm_alignr_epi8(manshuffle, empshuffle, 3);
+	__m128i r =  _mm_alignr_epi8(manshuffle, empshuffle, 3);
+	//break point right here to view the memory layout and results of the employee schedule
+	return r;
 
 }
