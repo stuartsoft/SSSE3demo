@@ -61,7 +61,6 @@ __m128i alignrPseudo(unsigned char (&a)[16], unsigned char (&b)[16], int n){
 		t1[i] = t1[i+n];//shift entire bytes down the array.
 		//Effectivly the same as a bitshift where shifts may only be made in increments of 8
 	}
-
 	return _mm_loadu_si128((__m128i*)&t1[0]);
 }
 
@@ -92,12 +91,50 @@ __m128i mulhrsInstruction(signed short (&a)[8], signed short (&b)[8]){
 	return _mm_mulhrs_epi16(ma, mb);
 }
 
+
+void EmployeeScheduleInstruction(){
+	unsigned char emp[16];//regular employees
+	unsigned char man[16];//managers
+
+	for (int i = 1;i<=16;i++){
+		emp[i-1] = i;
+		man[i-1] = i+0xA0;
+	}
+
+	unsigned char b[16];
+
+
+	for (int i = 0;i<16;i++){
+		b[i] = 0x80;
+	}
+	b[0] = rand()%16;
+	b[1] = rand()%16;
+	b[2] = rand()%16;
+	__m128i manshuffle = shuffleInstruction(man,b);
+
+	//change the mask
+
+	for (int i = 0;i<16;i++){
+		b[i] = rand()%16;
+	}
+	b[0] = 0x80;
+	b[1] = 0x80;
+	b[2] = 0x80;
+
+	__m128i empshuffle = shuffleInstruction(emp,b);
+
+	__m128i r = _mm_alignr_epi8(manshuffle, empshuffle, 3);
+
+}
+
 int main (int argc, char* argv[]){
 
 	__m128i mr1, mr2, mr3, mr4, mr5, mr6;
 	StopWatch timer;
 
 	//---------Shuffle_epi8
+
+	EmployeeScheduleInstruction();
 
 	unsigned char a[16];
 	unsigned char b[16];
