@@ -97,53 +97,71 @@ int main (int argc, char* argv[]){
 	__m128i mr1, mr2, mr3, mr4, mr5, mr6;
 	StopWatch timer;
 
+	//---------Shuffle_epi8
+
 	unsigned char a[16];
 	unsigned char b[16];
 
-	for (int i = 0;i<16;i++){
-		b[i] = (i<<1);
-		a[i] = 128+i;
-	}
+	double elapsed;
 
-	timer.start();
 	for (int i = 0;i<ITERATIONS;i++){
+		for (int i = 0;i<16;i++){
+			b[i] = rand()%255;
+			a[i] = rand()%255;
+		}
+		timer.start();
 		mr1 = shufflePseudo(a,b);
+		elapsed = timer.stop();
 	}
-	double elapsed = timer.stop();
 	cout << "Elapsed time for Shuffle pseudo: " << elapsed << endl;
 
 	timer.reset();
-	timer.start();
 	for (int i = 0;i<ITERATIONS;i++){
+		for (int i = 0;i<16;i++){
+			b[i] = rand()%255;
+			a[i] = rand()%255;
+		}
+		timer.start();
 		mr2 = shuffleInstruction(a,b);
+		elapsed = timer.stop();
 	}
-	elapsed = timer.stop();
 	cout << "Elapsed time for _mm_shuffle_epi8: " << elapsed << endl;
-
-	//---------------
 
 	if (_mm_test_all_ones(_mm_cmpeq_epi8(mr1, mr2)))
 		cout<<"Values match"<<endl;
 
+	//---------alighnr_epi8
+
 	timer.reset();
-	timer.start();
 	for (int i = 0;i<ITERATIONS;i++){
+		for (int i = 0;i<16;i++){
+			b[i] = rand()%255;
+			a[i] = rand()%255;
+		}
+		timer.start();
 		mr3 = alignrPseudo(a,b,0);
+		elapsed = timer.stop();
 	}
-	elapsed = timer.stop();
 	cout << "Elapsed time for alignrPseudo : " << elapsed << endl;
 
 	timer.reset();
-	timer.start();
 	for (int i = 0;i<ITERATIONS;i++){
+		for (int i = 0;i<16;i++){
+			b[i] = rand()%255;
+			a[i] = rand()%255;
+		}
+		timer.start();
 		mr4 = alignrInstruction(a,b,0);
+		elapsed = timer.stop();
 	}
-	elapsed = timer.stop();
 	cout << "Elapsed time for _mm_alignr_epi8 : " << elapsed << endl;
 
 
 	if (_mm_test_all_ones(_mm_cmpeq_epi8(mr3, mr4)))
 		cout<<"Values match"<<endl;
+
+
+	//---------mulhrs_epi16
 
 	signed short ssa[8];
 	signed short ssb[8];
@@ -154,19 +172,27 @@ int main (int argc, char* argv[]){
 	}
 
 	timer.reset();
-	timer.start();
 	for (int i = 0;i<ITERATIONS;i++){
+		for (int i = 0;i<16;i++){
+			ssa[i] = rand()%255;
+			ssb[i] = rand()%255;
+		}
+		timer.start();
 		mr5 = mulhrsPseudo(ssa, ssb);
+		elapsed = timer.stop();
 	}
-	elapsed = timer.stop();
 	cout << "Elapsed time for mulhrsPseudo : " << elapsed << endl;
 
 	timer.reset();
-	timer.start();
 	for (int i = 0;i<ITERATIONS;i++){
-		mr6 = mulhrsInstruction(ssa, ssb);	
+		for (int i = 0;i<16;i++){
+			ssa[i] = rand()%255;
+			ssb[i] = rand()%255;
+		}
+		timer.start();
+		mr6 = mulhrsInstruction(ssa, ssb);
+		elapsed = timer.stop();
 	}
-	elapsed = timer.stop();
 	cout << "Elapsed time for _mm_mulhrs_epi16 : " << elapsed << endl;
 
 
