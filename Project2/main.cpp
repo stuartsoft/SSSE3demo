@@ -11,10 +11,11 @@
 using namespace std;
 
 //forward declarations
-void EmployeeSchedule(bool RunOnHardware);
+__m128i employeeSchedule(bool RunOnHardware);
 void shuffleTest();
 void alignrTest();
 void mulhrsTest();
+void employeeTest();
 
 __m128i mr1, mr2, mr3, mr4, mr5, mr6;
 unsigned char a[16];
@@ -25,10 +26,18 @@ signed short ssb[8];
 int main (int argc, char* argv[]){
 
 	shuffleTest();
+	cout<<endl;
+
 
 	alignrTest();
+	cout<<endl;
 
 	mulhrsTest();
+	cout<<endl;
+
+	cout<<"--------------------"<<endl;
+
+	employeeTest();
 
 	system("pause");
 }
@@ -46,7 +55,7 @@ void shuffleTest(){
 		mr1 = SSSE3Helper::shufflePseudo(a,b);
 		elapsed = timer.stop();
 	}
-	cout << "Elapsed time for Shuffle pseudo: " << elapsed << endl;
+	cout << "Elapsed time for shuffle pseudo: \t" << elapsed << endl;
 
 	timer.reset();
 	for (int i = 0;i<ITERATIONS;i++){
@@ -58,7 +67,7 @@ void shuffleTest(){
 		mr2 = SSSE3Helper::shuffleInstruction(a,b);
 		elapsed = timer.stop();
 	}
-	cout << "Elapsed time for _mm_shuffle_epi8: " << elapsed << endl;
+	cout << "Elapsed time for _mm_shuffle_epi8: \t" << elapsed << endl;
 }
 
 void alignrTest(){
@@ -75,7 +84,7 @@ void alignrTest(){
 		mr3 = SSSE3Helper::alignrPseudo(a,b,0);
 		elapsed = timer.stop();
 	}
-	cout << "Elapsed time for alignrPseudo : " << elapsed << endl;
+	cout << "Elapsed time for alignr pseudo : \t" << elapsed << endl;
 
 	timer.reset();
 	for (int i = 0;i<ITERATIONS;i++){
@@ -87,7 +96,7 @@ void alignrTest(){
 		mr4 = SSSE3Helper::alignrInstruction(a,b,0);
 		elapsed = timer.stop();
 	}
-	cout << "Elapsed time for _mm_alignr_epi8 : " << elapsed << endl;
+	cout << "Elapsed time for _mm_alignr_epi8 : \t" << elapsed << endl;
 }
 
 void mulhrsTest(){
@@ -104,7 +113,7 @@ void mulhrsTest(){
 		mr5 = SSSE3Helper::mulhrsPseudo(ssa, ssb);
 		elapsed = timer.stop();
 	}
-	cout << "Elapsed time for mulhrsPseudo : " << elapsed << endl;
+	cout << "Elapsed time for mulhrs pseudo : \t" << elapsed << endl;
 
 	timer.reset();
 	for (int i = 0;i<ITERATIONS;i++){
@@ -116,12 +125,29 @@ void mulhrsTest(){
 		mr6 = SSSE3Helper::mulhrsInstruction(ssa, ssb);
 		elapsed = timer.stop();
 	}
-	cout << "Elapsed time for _mm_mulhrs_epi16 : " << elapsed << endl;
+	cout << "Elapsed time for _mm_mulhrs_epi16 : \t" << elapsed << endl;
+}
+
+void employeeTest(){
+	StopWatch timer;
+	timer.start();
+	for (int i = 0;i<ITERATIONS;i++){
+		employeeSchedule(false);
+	}
+	double elapsed = timer.stop();
+	cout<< "Employee Schedule Pseudo: \t\t"<< elapsed<<endl;
+
+	timer.reset();
+	timer.start();
+	for (int i = 0;i<ITERATIONS;i++){
+		employeeSchedule(true);
+	}
+	elapsed = timer.stop();
+	cout<<"Employee Schedule Instruction: \t\t"<< elapsed<<endl;
 }
 
 
-
-void EmployeeSchedule(bool RunOnHardware){
+__m128i employeeSchedule(bool RunOnHardware){
 	unsigned char emp[16];//regular employees
 	unsigned char man[16];//managers
 
@@ -156,6 +182,6 @@ void EmployeeSchedule(bool RunOnHardware){
 	else
 		empshuffle = SSSE3Helper::shufflePseudo(emp,b);
 
-	__m128i r = _mm_alignr_epi8(manshuffle, empshuffle, 3);
+	return _mm_alignr_epi8(manshuffle, empshuffle, 3);
 
 }
